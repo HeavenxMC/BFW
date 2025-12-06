@@ -64,20 +64,6 @@ const Contact = () => {
               </div>
 
               <div className="info-section">
-                <h3 className="info-title">Server Information</h3>
-                <div className="server-info">
-                  <div className="server-detail">
-                    <span className="detail-label">Server Name</span>
-                    <span className="detail-value">{siteConfig.contact.serverInfo.name}</span>
-                  </div>
-                  <div className="server-detail">
-                    <span className="detail-label">Connect</span>
-                    <span className="detail-value">{siteConfig.contact.serverInfo.ip}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="info-section">
                 <h3 className="info-title">Follow Us</h3>
                 <div className="socials-grid">
                   {siteConfig.contact.socials.map((social) => {
