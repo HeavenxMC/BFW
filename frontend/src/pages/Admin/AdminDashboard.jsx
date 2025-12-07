@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Settings, Users, FileText, Image, Link as LinkIcon, LogOut, Save, 
-  AlertCircle, Navigation, DollarSign, Palette
+  AlertCircle, Navigation, DollarSign, Palette, Inbox, Check, X, Trash2
 } from 'lucide-react';
 import axios from 'axios';
 import { siteConfig } from '../../config';
