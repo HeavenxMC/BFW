@@ -157,7 +157,11 @@ const Contact = () => {
                   <Send size={20} />
                 </button>
 
-                {submitMessage && <p className="submit-message">{submitMessage}</p>}
+                {submitMessage && (
+                  <p className={`submit-message ${isError ? 'error' : 'success'}`}>
+                    {submitMessage}
+                  </p>
+                )}
               </form>
             </div>
           </div>
