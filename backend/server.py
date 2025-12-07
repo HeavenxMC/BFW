@@ -78,6 +78,46 @@ async def get_status_checks():
     
     return status_checks
 
+# Contact Form Submission Endpoints
+@api_router.post("/contact/submit", response_model=ContactSubmission)
+async def submit_contact_form(input: ContactSubmissionCreate):
+    submission_obj = ContactSubmission(**input.model_dump())
+    
+    # Convert to dict and serialize datetime to ISO string for MongoDB
+    doc = submission_obj.model_dump()
+    doc['timestamp'] = doc['timestamp'].isoformat()
+    
+    _ = await db.contact_submissions.insert_one(doc)
+    return submission_obj
+
+@api_router.get("/contact/submissions", response_model=List[ContactSubmission])
+async def get_contact_submissions():
+    submissions = await db.contact_submissions.find({}, {"_id": 0}).sort("timestamp", -1).to_list(1000)
+    
+    # Convert ISO string timestamps back to datetime objects
+    for submission in submissions:
+        if isinstance(submission['timestamp'], str):
+            submission['timestamp'] = datetime.fromisoformat(submission['timestamp'])
+    
+    return submissions
+
+@api_router.patch("/contact/submissions/{submission_id}/status")
+async def update_submission_status(submission_id: str, status: str):
+    result = await db.contact_submissions.update_one(
+        {"id": submission_id},
+        {"$set": {"status": status}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    return {"success": True, "message": "Status updated"}
+
+@api_router.delete("/contact/submissions/{submission_id}")
+async def delete_submission(submission_id: str):
+    result = await db.contact_submissions.delete_one({"id": submission_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    return {"success": True, "message": "Submission deleted"}
+
 # Include the router in the main app
 app.include_router(api_router)
 app.include_router(admin_router)
