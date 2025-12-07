@@ -21,19 +21,26 @@ class ConfigUpdateRequest(BaseModel):
     config: Dict[str, Any]
 
 def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    if credentials.credentials != ADMIN_PASSWORD:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    return True
+    # Token should be in format "username:password"
+    try:
+        username, password = credentials.credentials.split(":", 1)
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            return True
+    except:
+        pass
+    raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @admin_router.post("/login")
 async def admin_login(request: LoginRequest):
-    if request.password == ADMIN_PASSWORD:
+    if request.username == ADMIN_USERNAME and request.password == ADMIN_PASSWORD:
+        # Create token with username:password format
+        token = f"{request.username}:{request.password}"
         return {
             "success": True,
-            "token": ADMIN_PASSWORD,
+            "token": token,
             "message": "Login successful"
         }
-    raise HTTPException(status_code=401, detail="Invalid password")
+    raise HTTPException(status_code=401, detail="Invalid username or password")
 
 @admin_router.get("/config")
 async def get_config(verified: bool = Depends(verify_admin)):
