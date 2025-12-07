@@ -63,10 +63,10 @@
   align-items: center;
 }
 
+.text-input,
 .password-input {
   width: 100%;
   padding: 1rem;
-  padding-right: 3rem;
   background: rgba(107, 33, 168, 0.05);
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -75,6 +75,11 @@
   transition: all 0.3s ease;
 }
 
+.password-input {
+  padding-right: 3rem;
+}
+
+.text-input:focus,
 .password-input:focus {
   outline: none;
   border-color: var(--color-royal-purple);
