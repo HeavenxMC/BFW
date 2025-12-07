@@ -44,6 +44,19 @@ const AdminLogin = () => {
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
+              required
+              className="text-input"
+            />
+          </div>
+
+          <div className="form-group">
             <label htmlFor="password">Password</label>
             <div className="password-input-wrapper">
               <input
@@ -51,7 +64,7 @@ const AdminLogin = () => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter admin password"
+                placeholder="Enter password"
                 required
                 className="password-input"
               />
@@ -73,8 +86,7 @@ const AdminLogin = () => {
         </form>
 
         <div className="login-info">
-          <p>Default password: <code>blackfeather2024</code></p>
-          <p className="info-note">Change this in backend .env file: ADMIN_PASSWORD</p>
+          <p className="info-note">Secure admin access for BLACK FEATHER management</p>
         </div>
       </div>
     </div>
