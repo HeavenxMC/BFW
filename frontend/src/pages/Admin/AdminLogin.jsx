@@ -8,6 +8,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const AdminLogin = () => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -20,13 +21,13 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API}/admin/login`, { password });
+      const response = await axios.post(`${API}/admin/login`, { username, password });
       if (response.data.success) {
         localStorage.setItem('adminToken', response.data.token);
         navigate('/admin/dashboard');
       }
     } catch (err) {
-      setError('Invalid password. Please try again.');
+      setError(err.response?.data?.detail || 'Invalid credentials. Please try again.');
     } finally {
       setLoading(false);
     }
