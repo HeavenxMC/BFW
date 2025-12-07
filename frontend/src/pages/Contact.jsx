@@ -65,6 +65,18 @@ const Contact = () => {
           <div className="contact-grid">
             <div className="contact-info">
               <div className="info-section">
+                <h3 className="info-title">RP Server</h3>
+                <div className="server-info-box">
+                  <Server size={32} className="server-icon" />
+                  <div className="server-details">
+                    <div className="server-label">{siteConfig.contact.serverInfo.label}</div>
+                    <div className="server-name">{siteConfig.contact.serverInfo.name}</div>
+                    <div className="server-ip">{siteConfig.contact.serverInfo.ip}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="info-section">
                 <h3 className="info-title">Join Our Community</h3>
                 <a
                   href={siteConfig.contact.discord.link}
