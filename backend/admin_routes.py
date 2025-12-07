@@ -9,10 +9,12 @@ from pathlib import Path
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"])
 security = HTTPBearer()
 
-# Simple admin password (change this!)
-ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'blackfeather2024')
+# Admin credentials
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'Manan@08')
 
 class LoginRequest(BaseModel):
+    username: str
     password: str
 
 class ConfigUpdateRequest(BaseModel):
