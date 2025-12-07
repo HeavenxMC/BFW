@@ -17,6 +17,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
   const [error, setError] = useState('');
+  const [submissions, setSubmissions] = useState([]);
+  const [submissionsLoading, setSubmissionsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +27,24 @@ const AdminDashboard = () => {
       navigate('/admin/login');
     }
   }, [navigate]);
+
+  const fetchSubmissions = async () => {
+    setSubmissionsLoading(true);
+    try {
+      const response = await axios.get(`${API}/contact/submissions`);
+      setSubmissions(response.data);
+    } catch (err) {
+      console.error('Failed to fetch submissions:', err);
+    } finally {
+      setSubmissionsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'submissions') {
+      fetchSubmissions();
+    }
+  }, [activeTab]);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
