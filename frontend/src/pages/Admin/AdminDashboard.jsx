@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Users, FileText, Image, Link as LinkIcon, LogOut, Save, AlertCircle } from 'lucide-react';
+import { 
+  Settings, Users, FileText, Image, Link as LinkIcon, LogOut, Save, 
+  AlertCircle, Navigation, DollarSign, Palette
+} from 'lucide-react';
 import axios from 'axios';
 import { siteConfig } from '../../config';
 import './AdminDashboard.css';
@@ -115,7 +118,21 @@ const AdminDashboard = () => {
             onClick={() => setActiveTab('general')}
           >
             <Settings size={20} />
-            <span>General</span>
+            <span>General Settings</span>
+          </button>
+          <button
+            className={`nav-item ${activeTab === 'colors' ? 'active' : ''}`}
+            onClick={() => setActiveTab('colors')}
+          >
+            <Palette size={20} />
+            <span>Theme Colors</span>
+          </button>
+          <button
+            className={`nav-item ${activeTab === 'navigation' ? 'active' : ''}`}
+            onClick={() => setActiveTab('navigation')}
+          >
+            <Navigation size={20} />
+            <span>Navigation</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'roster' ? 'active' : ''}`}
@@ -130,6 +147,13 @@ const AdminDashboard = () => {
           >
             <FileText size={20} />
             <span>Rules</span>
+          </button>
+          <button
+            className={`nav-item ${activeTab === 'join' ? 'active' : ''}`}
+            onClick={() => setActiveTab('join')}
+          >
+            <DollarSign size={20} />
+            <span>Join Requirements</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'images' ? 'active' : ''}`}
@@ -180,6 +204,17 @@ const AdminDashboard = () => {
           {activeTab === 'general' && (
             <GeneralTab config={config} updateConfig={updateConfig} />
           )}
+          {activeTab === 'colors' && (
+            <ColorsTab config={config} updateConfig={updateConfig} />
+          )}
+          {activeTab === 'navigation' && (
+            <NavigationTab
+              config={config}
+              updateArrayItem={updateArrayItem}
+              addArrayItem={addArrayItem}
+              removeArrayItem={removeArrayItem}
+            />
+          )}
           {activeTab === 'roster' && (
             <RosterTab
               config={config}
@@ -194,6 +229,15 @@ const AdminDashboard = () => {
               updateArrayItem={updateArrayItem}
               addArrayItem={addArrayItem}
               removeArrayItem={removeArrayItem}
+            />
+          )}
+          {activeTab === 'join' && (
+            <JoinTab
+              config={config}
+              updateArrayItem={updateArrayItem}
+              addArrayItem={addArrayItem}
+              removeArrayItem={removeArrayItem}
+              updateConfig={updateConfig}
             />
           )}
           {activeTab === 'images' && (
@@ -240,7 +284,131 @@ const GeneralTab = ({ config, updateConfig }) => (
     </section>
 
     <section className="admin-section">
+      <h3>Hero Section (Landing Page)</h3>
+      <div className="form-grid">
+        <div className="form-field">
+          <label>Hero Title</label>
+          <input
+            type="text"
+            value={config.hero.title}
+            onChange={(e) => updateConfig('hero.title', e.target.value)}
+          />
+        </div>
+        <div className="form-field">
+          <label>Hero Tagline</label>
+          <input
+            type="text"
+            value={config.hero.tagline}
+            onChange={(e) => updateConfig('hero.tagline', e.target.value)}
+          />
+        </div>
+      </div>
+      <div className="form-grid">
+        <div className="form-field">
+          <label>Primary Button Text</label>
+          <input
+            type="text"
+            value={config.hero.primaryButton.text}
+            onChange={(e) => updateConfig('hero.primaryButton.text', e.target.value)}
+          />
+        </div>
+        <div className="form-field">
+          <label>Primary Button Link</label>
+          <input
+            type="text"
+            value={config.hero.primaryButton.link}
+            onChange={(e) => updateConfig('hero.primaryButton.link', e.target.value)}
+          />
+        </div>
+      </div>
+      <div className="form-grid">
+        <div className="form-field">
+          <label>Secondary Button Text</label>
+          <input
+            type="text"
+            value={config.hero.secondaryButton.text}
+            onChange={(e) => updateConfig('hero.secondaryButton.text', e.target.value)}
+          />
+        </div>
+        <div className="form-field">
+          <label>Secondary Button Link</label>
+          <input
+            type="text"
+            value={config.hero.secondaryButton.link}
+            onChange={(e) => updateConfig('hero.secondaryButton.link', e.target.value)}
+          />
+        </div>
+      </div>
+    </section>
+
+    <section className="admin-section">
+      <h3>About Page</h3>
+      <div className="form-field">
+        <label>Title</label>
+        <input
+          type="text"
+          value={config.about.title}
+          onChange={(e) => updateConfig('about.title', e.target.value)}
+        />
+      </div>
+      <div className="form-field">
+        <label>Description</label>
+        <textarea
+          rows={4}
+          value={config.about.description}
+          onChange={(e) => updateConfig('about.description', e.target.value)}
+        />
+      </div>
+      <div className="form-field">
+        <label>Mission</label>
+        <textarea
+          rows={4}
+          value={config.about.mission}
+          onChange={(e) => updateConfig('about.mission', e.target.value)}
+        />
+      </div>
+      
+      <h4>Core Values</h4>
+      {config.about.values.map((value, index) => (
+        <div key={index} className="value-item">
+          <div className="form-grid">
+            <div className="form-field">
+              <label>Value Title</label>
+              <input
+                type="text"
+                value={value.title}
+                onChange={(e) => {
+                  const newValues = [...config.about.values];
+                  newValues[index].title = e.target.value;
+                  updateConfig('about.values', newValues);
+                }}
+              />
+            </div>
+            <div className="form-field">
+              <label>Description</label>
+              <textarea
+                rows={2}
+                value={value.description}
+                onChange={(e) => {
+                  const newValues = [...config.about.values];
+                  newValues[index].description = e.target.value;
+                  updateConfig('about.values', newValues);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+    </section>
+  </div>
+);
+
+// Colors Tab Component
+const ColorsTab = ({ config, updateConfig }) => (
+  <div className="tab-content">
+    <section className="admin-section">
       <h3>Theme Colors</h3>
+      <p className="section-note">These colors control the entire website theme. Changes apply globally.</p>
       <div className="form-grid">
         <div className="form-field">
           <label>Primary Black</label>
@@ -302,27 +470,111 @@ const GeneralTab = ({ config, updateConfig }) => (
             />
           </div>
         </div>
+        <div className="form-field">
+          <label>Soft Grey Highlight</label>
+          <div className="color-input-wrapper">
+            <input
+              type="color"
+              value={config.colors.softGreyHighlight}
+              onChange={(e) => updateConfig('colors.softGreyHighlight', e.target.value)}
+            />
+            <input
+              type="text"
+              value={config.colors.softGreyHighlight}
+              onChange={(e) => updateConfig('colors.softGreyHighlight', e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="form-field">
+          <label>Purple Dark</label>
+          <div className="color-input-wrapper">
+            <input
+              type="color"
+              value={config.colors.purpleDark}
+              onChange={(e) => updateConfig('colors.purpleDark', e.target.value)}
+            />
+            <input
+              type="text"
+              value={config.colors.purpleDark}
+              onChange={(e) => updateConfig('colors.purpleDark', e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="form-field">
+          <label>Purple Light</label>
+          <div className="color-input-wrapper">
+            <input
+              type="color"
+              value={config.colors.purpleLight}
+              onChange={(e) => updateConfig('colors.purpleLight', e.target.value)}
+            />
+            <input
+              type="text"
+              value={config.colors.purpleLight}
+              onChange={(e) => updateConfig('colors.purpleLight', e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="form-field">
+          <label>Yellow Dark</label>
+          <div className="color-input-wrapper">
+            <input
+              type="color"
+              value={config.colors.yellowDark}
+              onChange={(e) => updateConfig('colors.yellowDark', e.target.value)}
+            />
+            <input
+              type="text"
+              value={config.colors.yellowDark}
+              onChange={(e) => updateConfig('colors.yellowDark', e.target.value)}
+            />
+          </div>
+        </div>
       </div>
     </section>
+  </div>
+);
 
+// Navigation Tab Component
+const NavigationTab = ({ config, updateArrayItem, addArrayItem, removeArrayItem }) => (
+  <div className="tab-content">
     <section className="admin-section">
-      <h3>About Page</h3>
-      <div className="form-field">
-        <label>Description</label>
-        <textarea
-          rows={4}
-          value={config.about.description}
-          onChange={(e) => updateConfig('about.description', e.target.value)}
-        />
-      </div>
-      <div className="form-field">
-        <label>Mission</label>
-        <textarea
-          rows={4}
-          value={config.about.mission}
-          onChange={(e) => updateConfig('about.mission', e.target.value)}
-        />
-      </div>
+      <h3>Navigation Menu Items</h3>
+      <p className="section-note">Manage website navigation links</p>
+      {config.navigation.map((item, index) => (
+        <div key={index} className="nav-item-edit">
+          <div className="form-grid">
+            <div className="form-field">
+              <label>Name</label>
+              <input
+                type="text"
+                value={item.name}
+                onChange={(e) => updateArrayItem('navigation', index, 'name', e.target.value)}
+              />
+            </div>
+            <div className="form-field">
+              <label>Path</label>
+              <input
+                type="text"
+                value={item.path}
+                onChange={(e) => updateArrayItem('navigation', index, 'path', e.target.value)}
+              />
+            </div>
+          </div>
+          <button
+            className="btn-remove"
+            onClick={() => removeArrayItem('navigation', index)}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+      <button
+        className="btn btn-secondary"
+        onClick={() => addArrayItem('navigation', { name: '', path: '' })}
+      >
+        Add Navigation Item
+      </button>
     </section>
   </div>
 );
@@ -332,6 +584,31 @@ const RosterTab = ({ config, updateArrayItem, addArrayItem, removeArrayItem }) =
   <div className="tab-content">
     <section className="admin-section">
       <h3>Roster Management</h3>
+      <div className="form-grid">
+        <div className="form-field">
+          <label>Title</label>
+          <input
+            type="text"
+            value={config.roster.title}
+            onChange={(e) => {
+              const newConfig = { ...config };
+              newConfig.roster.title = e.target.value;
+            }}
+          />
+        </div>
+        <div className="form-field">
+          <label>Subtitle</label>
+          <input
+            type="text"
+            value={config.roster.subtitle}
+            onChange={(e) => {
+              const newConfig = { ...config };
+              newConfig.roster.subtitle = e.target.value;
+            }}
+          />
+        </div>
+      </div>
+      
       {config.roster.ranks.map((rank, rankIndex) => (
         <div key={rankIndex} className="roster-rank-section">
           <h4>{rank.name}</h4>
@@ -351,6 +628,24 @@ const RosterTab = ({ config, updateArrayItem, addArrayItem, removeArrayItem }) =
                 value={rank.description}
                 onChange={(e) => updateArrayItem('roster.ranks', rankIndex, 'description', e.target.value)}
               />
+            </div>
+            <div className="form-field">
+              <label>Rank Number</label>
+              <input
+                type="number"
+                value={rank.rank}
+                onChange={(e) => updateArrayItem('roster.ranks', rankIndex, 'rank', parseInt(e.target.value))}
+              />
+            </div>
+            <div className="form-field">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={rank.expandable}
+                  onChange={(e) => updateArrayItem('roster.ranks', rankIndex, 'expandable', e.target.checked)}
+                />
+                Expandable
+              </label>
             </div>
           </div>
 
@@ -410,9 +705,40 @@ const RulesTab = ({ config, updateArrayItem, addArrayItem, removeArrayItem }) =>
   <div className="tab-content">
     <section className="admin-section">
       <h3>Rules Management</h3>
+      <div className="form-field">
+        <label>Rules Page Title</label>
+        <input
+          type="text"
+          value={config.rules.title}
+          onChange={(e) => {
+            const newConfig = { ...config };
+            newConfig.rules.title = e.target.value;
+          }}
+        />
+      </div>
+      
       {config.rules.categories.map((category, catIndex) => (
         <div key={catIndex} className="rules-category-section">
           <h4>{category.title}</h4>
+          <div className="form-grid">
+            <div className="form-field">
+              <label>Category Title</label>
+              <input
+                type="text"
+                value={category.title}
+                onChange={(e) => updateArrayItem('rules.categories', catIndex, 'title', e.target.value)}
+              />
+            </div>
+            <div className="form-field">
+              <label>Icon (crown, radio, target, alert-triangle)</label>
+              <input
+                type="text"
+                value={category.icon}
+                onChange={(e) => updateArrayItem('rules.categories', catIndex, 'icon', e.target.value)}
+              />
+            </div>
+          </div>
+          
           {category.rules.map((rule, ruleIndex) => (
             <div key={ruleIndex} className="rule-item">
               <div className="form-field">
@@ -465,12 +791,113 @@ const RulesTab = ({ config, updateArrayItem, addArrayItem, removeArrayItem }) =>
   </div>
 );
 
+// Join Requirements Tab Component
+const JoinTab = ({ config, updateArrayItem, addArrayItem, removeArrayItem, updateConfig }) => (
+  <div className="tab-content">
+    <section className="admin-section">
+      <h3>Join Page Settings</h3>
+      <div className="form-grid">
+        <div className="form-field">
+          <label>Title</label>
+          <input
+            type="text"
+            value={config.joinRequirements.title}
+            onChange={(e) => updateConfig('joinRequirements.title', e.target.value)}
+          />
+        </div>
+        <div className="form-field">
+          <label>Subtitle</label>
+          <input
+            type="text"
+            value={config.joinRequirements.subtitle}
+            onChange={(e) => updateConfig('joinRequirements.subtitle', e.target.value)}
+          />
+        </div>
+      </div>
+
+      <h4>Requirements</h4>
+      {config.joinRequirements.requirements.map((req, index) => (
+        <div key={index} className="requirement-item">
+          <div className="form-grid">
+            <div className="form-field">
+              <label>Requirement Title</label>
+              <input
+                type="text"
+                value={req.title}
+                onChange={(e) => updateArrayItem('joinRequirements.requirements', index, 'title', e.target.value)}
+              />
+            </div>
+            <div className="form-field">
+              <label>Description</label>
+              <input
+                type="text"
+                value={req.description}
+                onChange={(e) => updateArrayItem('joinRequirements.requirements', index, 'description', e.target.value)}
+              />
+            </div>
+          </div>
+          <button
+            className="btn-remove"
+            onClick={() => removeArrayItem('joinRequirements.requirements', index)}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+      <button
+        className="btn btn-secondary"
+        onClick={() => addArrayItem('joinRequirements.requirements', { title: '', description: '' })}
+      >
+        Add Requirement
+      </button>
+
+      <h4>Application Process</h4>
+      {config.joinRequirements.applicationProcess.map((step, index) => (
+        <div key={index} className="process-step-item">
+          <div className="form-field">
+            <label>Step {index + 1}</label>
+            <input
+              type="text"
+              value={step}
+              onChange={(e) => {
+                const newProcess = [...config.joinRequirements.applicationProcess];
+                newProcess[index] = e.target.value;
+                updateConfig('joinRequirements.applicationProcess', newProcess);
+              }}
+            />
+          </div>
+          <button
+            className="btn-remove"
+            onClick={() => {
+              const newProcess = config.joinRequirements.applicationProcess.filter((_, i) => i !== index);
+              updateConfig('joinRequirements.applicationProcess', newProcess);
+            }}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+      <button
+        className="btn btn-secondary"
+        onClick={() => {
+          const newProcess = [...config.joinRequirements.applicationProcess, ''];
+          updateConfig('joinRequirements.applicationProcess', newProcess);
+        }}
+      >
+        Add Process Step
+      </button>
+    </section>
+  </div>
+);
+
 // Images Tab Component
 const ImagesTab = ({ config, updateConfig }) => (
   <div className="tab-content">
     <section className="admin-section">
       <h3>Image Paths</h3>
       <p className="section-note">Upload images to /app/frontend/public/ and enter the path here (e.g., /logo.png)</p>
+      
+      <h4>Main Images</h4>
       <div className="form-grid">
         <div className="form-field">
           <label>Logo</label>
@@ -490,24 +917,176 @@ const ImagesTab = ({ config, updateConfig }) => (
             placeholder="/hero-bg.jpg"
           />
         </div>
+        <div className="form-field">
+          <label>About Banner</label>
+          <input
+            type="text"
+            value={config.images.aboutBanner}
+            onChange={(e) => updateConfig('images.aboutBanner', e.target.value)}
+            placeholder="/about-banner.jpg"
+          />
+        </div>
+        <div className="form-field">
+          <label>Rules Banner</label>
+          <input
+            type="text"
+            value={config.images.rulesBanner}
+            onChange={(e) => updateConfig('images.rulesBanner', e.target.value)}
+            placeholder="/rules-banner.jpg"
+          />
+        </div>
+        <div className="form-field">
+          <label>Roster Banner</label>
+          <input
+            type="text"
+            value={config.images.rosterBanner}
+            onChange={(e) => updateConfig('images.rosterBanner', e.target.value)}
+            placeholder="/roster-banner.jpg"
+          />
+        </div>
+        <div className="form-field">
+          <label>Join Banner</label>
+          <input
+            type="text"
+            value={config.images.joinBanner}
+            onChange={(e) => updateConfig('images.joinBanner', e.target.value)}
+            placeholder="/join-banner.jpg"
+          />
+        </div>
+        <div className="form-field">
+          <label>Contact Banner</label>
+          <input
+            type="text"
+            value={config.images.contactBanner}
+            onChange={(e) => updateConfig('images.contactBanner', e.target.value)}
+            placeholder="/contact-banner.jpg"
+          />
+        </div>
+      </div>
+
+      <h4>Rank Icons</h4>
+      <div className="form-grid">
+        <div className="form-field">
+          <label>Raven Regent Icon</label>
+          <input
+            type="text"
+            value={config.images.rankIcons.ravenRegent}
+            onChange={(e) => updateConfig('images.rankIcons.ravenRegent', e.target.value)}
+            placeholder="/ranks/regent.png"
+          />
+        </div>
+        <div className="form-field">
+          <label>Black Talon Icon</label>
+          <input
+            type="text"
+            value={config.images.rankIcons.blackTalon}
+            onChange={(e) => updateConfig('images.rankIcons.blackTalon', e.target.value)}
+            placeholder="/ranks/talon.png"
+          />
+        </div>
+        <div className="form-field">
+          <label>Nightborne Council Icon</label>
+          <input
+            type="text"
+            value={config.images.rankIcons.nightborneCouncil}
+            onChange={(e) => updateConfig('images.rankIcons.nightborneCouncil', e.target.value)}
+            placeholder="/ranks/council.png"
+          />
+        </div>
+        <div className="form-field">
+          <label>Shadowhands Icon</label>
+          <input
+            type="text"
+            value={config.images.rankIcons.shadowhands}
+            onChange={(e) => updateConfig('images.rankIcons.shadowhands', e.target.value)}
+            placeholder="/ranks/shadowhands.png"
+          />
+        </div>
+        <div className="form-field">
+          <label>Featherborn Icon</label>
+          <input
+            type="text"
+            value={config.images.rankIcons.featherborn}
+            onChange={(e) => updateConfig('images.rankIcons.featherborn', e.target.value)}
+            placeholder="/ranks/featherborn.png"
+          />
+        </div>
       </div>
     </section>
   </div>
 );
 
 // Contact Tab Component
-const ContactTab = ({ config, updateConfig, updateArrayItem }) => (
+const ContactTab = ({ config, updateConfig, updateArrayItem, addArrayItem, removeArrayItem }) => (
   <div className="tab-content">
     <section className="admin-section">
-      <h3>Discord & Social Links</h3>
-      <div className="form-field">
-        <label>Discord Invite Link</label>
-        <input
-          type="url"
-          value={config.contact.discord.link}
-          onChange={(e) => updateConfig('contact.discord.link', e.target.value)}
-          placeholder="https://discord.gg/yourlink"
-        />
+      <h3>Contact Page Settings</h3>
+      <div className="form-grid">
+        <div className="form-field">
+          <label>Title</label>
+          <input
+            type="text"
+            value={config.contact.title}
+            onChange={(e) => updateConfig('contact.title', e.target.value)}
+          />
+        </div>
+        <div className="form-field">
+          <label>Subtitle</label>
+          <input
+            type="text"
+            value={config.contact.subtitle}
+            onChange={(e) => updateConfig('contact.subtitle', e.target.value)}
+          />
+        </div>
+      </div>
+      
+      <h4>Discord</h4>
+      <div className="form-grid">
+        <div className="form-field">
+          <label>Discord Label</label>
+          <input
+            type="text"
+            value={config.contact.discord.label}
+            onChange={(e) => updateConfig('contact.discord.label', e.target.value)}
+          />
+        </div>
+        <div className="form-field">
+          <label>Discord Invite Link</label>
+          <input
+            type="url"
+            value={config.contact.discord.link}
+            onChange={(e) => updateConfig('contact.discord.link', e.target.value)}
+            placeholder="https://discord.gg/yourlink"
+          />
+        </div>
+      </div>
+
+      <h4>Server Information</h4>
+      <div className="form-grid">
+        <div className="form-field">
+          <label>Label</label>
+          <input
+            type="text"
+            value={config.contact.serverInfo.label}
+            onChange={(e) => updateConfig('contact.serverInfo.label', e.target.value)}
+          />
+        </div>
+        <div className="form-field">
+          <label>Server Name</label>
+          <input
+            type="text"
+            value={config.contact.serverInfo.name}
+            onChange={(e) => updateConfig('contact.serverInfo.name', e.target.value)}
+          />
+        </div>
+        <div className="form-field">
+          <label>Server IP</label>
+          <input
+            type="text"
+            value={config.contact.serverInfo.ip}
+            onChange={(e) => updateConfig('contact.serverInfo.ip', e.target.value)}
+          />
+        </div>
       </div>
 
       <h4>Social Media</h4>
@@ -539,8 +1118,92 @@ const ContactTab = ({ config, updateConfig, updateArrayItem }) => (
               />
             </div>
           </div>
+          <button
+            className="btn-remove"
+            onClick={() => removeArrayItem('contact.socials', index)}
+          >
+            Remove
+          </button>
         </div>
       ))}
+      <button
+        className="btn btn-secondary"
+        onClick={() => addArrayItem('contact.socials', { platform: '', link: '', username: '' })}
+      >
+        Add Social Media
+      </button>
+
+      <h4>Contact Form Fields</h4>
+      {config.contact.formFields.map((field, index) => (
+        <div key={index} className="form-field-item">
+          <div className="form-grid">
+            <div className="form-field">
+              <label>Field Name (ID)</label>
+              <input
+                type="text"
+                value={field.name}
+                onChange={(e) => updateArrayItem('contact.formFields', index, 'name', e.target.value)}
+              />
+            </div>
+            <div className="form-field">
+              <label>Label</label>
+              <input
+                type="text"
+                value={field.label}
+                onChange={(e) => updateArrayItem('contact.formFields', index, 'label', e.target.value)}
+              />
+            </div>
+            <div className="form-field">
+              <label>Type</label>
+              <select
+                value={field.type}
+                onChange={(e) => updateArrayItem('contact.formFields', index, 'type', e.target.value)}
+              >
+                <option value="text">Text</option>
+                <option value="email">Email</option>
+                <option value="number">Number</option>
+                <option value="textarea">Textarea</option>
+              </select>
+            </div>
+            <div className="form-field">
+              <label>Placeholder</label>
+              <input
+                type="text"
+                value={field.placeholder}
+                onChange={(e) => updateArrayItem('contact.formFields', index, 'placeholder', e.target.value)}
+              />
+            </div>
+            <div className="form-field">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={field.required}
+                  onChange={(e) => updateArrayItem('contact.formFields', index, 'required', e.target.checked)}
+                />
+                Required
+              </label>
+            </div>
+          </div>
+          <button
+            className="btn-remove"
+            onClick={() => removeArrayItem('contact.formFields', index)}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+      <button
+        className="btn btn-secondary"
+        onClick={() => addArrayItem('contact.formFields', { 
+          name: '', 
+          label: '', 
+          type: 'text', 
+          required: true, 
+          placeholder: '' 
+        })}
+      >
+        Add Form Field
+      </button>
     </section>
   </div>
 );
