@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Send, Instagram, MessageCircle, Twitter } from 'lucide-react';
+import { Send, Instagram, MessageCircle, Twitter, Server } from 'lucide-react';
+import axios from 'axios';
 import { siteConfig } from '../config';
 import './Contact.css';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const socialIconMap = {
   Instagram: Instagram,
@@ -13,6 +17,7 @@ const Contact = () => {
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -25,13 +30,25 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage('');
+    setIsError(false);
 
-    // Simulate form submission - connect to your backend or external service
-    setTimeout(() => {
+    try {
+      const response = await axios.post(`${API}/contact/submit`, {
+        form_data: formData
+      });
+      
       setIsSubmitting(false);
-      setSubmitMessage('Application submitted! Check your Discord for updates.');
+      setSubmitMessage('Application submitted successfully! Check your Discord for updates.');
       setFormData({});
-    }, 1500);
+      
+      // Reset form inputs
+      e.target.reset();
+    } catch (error) {
+      setIsSubmitting(false);
+      setIsError(true);
+      setSubmitMessage('Failed to submit application. Please try again or contact us on Discord.');
+      console.error('Submission error:', error);
+    }
   };
 
   return (
