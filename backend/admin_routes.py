@@ -82,3 +82,6 @@ export const siteConfig = {config_json};
         return {"success": True, "message": "Configuration updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error updating config: {str(e)}")
+
+# Note: Contact submissions endpoints are in main router at /api/contact/*
+# Admin can access them with their token for authentication if needed
